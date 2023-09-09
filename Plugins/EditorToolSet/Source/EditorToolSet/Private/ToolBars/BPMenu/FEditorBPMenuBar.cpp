@@ -2,7 +2,6 @@
 
 
 #include "ToolBars/BPMenu/FEditorBPMenuBar.h"
-#include "EditorToolSetCommands.h"
 #include "BlueprintEditorModule.h"
 #include "ToolBars/BPMenu/FEditorBPMenuCommands.h"
 

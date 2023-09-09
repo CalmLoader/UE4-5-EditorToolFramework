@@ -16,7 +16,6 @@ void FEditorToolSetModule::StartupModule()
 	
 	FEditorToolSetStyle::Initialize();
 	FEditorToolSetStyle::ReloadTextures();
-	// FEditorToolSetCommands::Register();
 
 	EditorMainMenuController = new FEditorMainMenuController;
 	EditorMainMenuBar = new FEditorMainMenuBar;
@@ -35,7 +34,6 @@ void FEditorToolSetModule::ShutdownModule()
 	OpenConsoleCommand->UnRegisterAllConsoleCommands();
 
 	FEditorToolSetStyle::Shutdown();
-	// FEditorToolSetCommands::Unregister();
 }
 
 void FEditorToolSetModule::OnPostEngineInit()
