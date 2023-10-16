@@ -7,6 +7,8 @@
 #include "EditorUtilityWidgetBlueprint.h"
 #include "Interfaces/IPluginManager.h"
 #include "Misc/FileHelper.h"
+#include "libxl.h"
+using namespace libxl;
 
 void UEditorToolSetBPLibrary::OpenBPUtilityByPath(const FString& Path)
 {
@@ -116,3 +118,40 @@ void UEditorToolSetBPLibrary::SplitBigFile(const FString& FilePath, const int64 
 	FileHandle->Flush();
 	delete FileHandle;
 }
+
+
+void UEditorToolSetBPLibrary::ReadExcelFile(const FString& ExcelFilePath)
+{
+	FPlatformProcess::PushDllDirectory(*(GetToolSetPluginBasePath() / TEXT("ThirdParty/LibXL/BIN/bin64/")));
+	void* LibXLHandle = FPlatformProcess::GetDllHandle(TEXT("libxl.dll"));
+	if (LibXLHandle)
+	{
+		UE_LOG(LogTemp, Log, TEXT("UEditorToolSetBPLibrary, ReadExcelFile, LoadLibXLHandle Success"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UEditorToolSetBPLibrary, ReadExcelFile, LoadLibXLHandle Failed"));
+		return;
+	}
+
+	// typedef bool (*RunLoadProc)(const wchar_t* a);
+	// if (RunLoadProc RunLoad = static_cast<RunLoadProc>(FPlatformProcess::GetDllExport(LibXLHandle, TEXT("xlBookLoadInfoW"))))
+	// {
+	// 	RunLoad(*ExcelFilePath);
+	// }
+	if(Book* MyBook = xlCreateXMLBook())
+	{
+		if(MyBook->load(*ExcelFilePath))
+		{
+			if(Sheet* MySheet = MyBook->getSheet(0))
+			{
+				const FString RowContent11 = MySheet->readStr(1,1);
+				UE_LOG(LogTemp, Log, TEXT("UEditorToolSetBPLibrary, ReadExcelFile:%s"), *RowContent11);
+			}
+		}
+	}
+	FPlatformProcess::FreeDllHandle(LibXLHandle);
+	LibXLHandle = nullptr;
+}
+
+

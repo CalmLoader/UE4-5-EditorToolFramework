@@ -30,4 +30,7 @@ public:
 	//切分大文件，例如日志文件
 	UFUNCTION(BlueprintCallable, Category="EditorToolSet")
 	static void SplitBigFile(const FString& FilePath, const int64 SingleFileSize = 1024);
+
+	UFUNCTION(BlueprintCallable, Category="EditorToolSet")
+	static void ReadExcelFile(const FString& ExcelFilePath);
 };

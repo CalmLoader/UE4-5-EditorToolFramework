@@ -1,5 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+using System.IO;
 using UnrealBuildTool;
 
 public class EditorToolSet : ModuleRules
@@ -11,6 +12,7 @@ public class EditorToolSet : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
+				Path.Combine(ThirdPartyPath,"LibXL/Include"),
 			}
 			);
 				
@@ -26,6 +28,7 @@ public class EditorToolSet : ModuleRules
 			new string[]
 			{
 				"Core",
+				"Projects",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -58,5 +61,19 @@ public class EditorToolSet : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
+		
+		
+		PublicAdditionalLibraries.Add(Path.Combine(ThirdPartyPath, "LibXL/LIB/lib64","libxl.lib"));
+		
+		RuntimeDependencies.Add(Path.Combine(ThirdPartyPath, "LibXL/BIN/bin64","libxl.dll"));
+		PublicDelayLoadDLLs.Add("libxl.dll");
+	}
+
+	private string ThirdPartyPath
+	{
+		get
+		{
+			return Path.GetFullPath(Path.Combine(ModuleDirectory, "..", "..","ThirdParty"));
+		}
 	}
 }
