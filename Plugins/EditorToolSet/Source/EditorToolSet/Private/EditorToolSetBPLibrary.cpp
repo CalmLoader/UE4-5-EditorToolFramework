@@ -5,9 +5,11 @@
 #include "DesktopPlatformModule.h"
 #include "EditorUtilitySubsystem.h"
 #include "EditorUtilityWidgetBlueprint.h"
+#include "GeneralProjectSettings.h"
 #include "Interfaces/IPluginManager.h"
 #include "Misc/FileHelper.h"
 #include "libxl.h"
+#include "Internationalization/Regex.h"
 using namespace libxl;
 
 void UEditorToolSetBPLibrary::OpenBPUtilityByPath(const FString& Path)
@@ -154,4 +156,35 @@ void UEditorToolSetBPLibrary::ReadExcelFile(const FString& ExcelFilePath)
 	LibXLHandle = nullptr;
 }
 
+void UEditorToolSetBPLibrary::GetVersionInfo(FString& VersionInfo)
+{
+	//git
+	const FString URL(TEXT("git.exe"));
+	const FString FullCommand(FString::Printf(TEXT("-C %s log -1"), *GetToolSetPluginBasePath()));
 
+	//svn
+	// FString URL(TEXT("svn.exe"));
+	// FString FullCommand(FString::Printf(TEXT("info %s"), *GetToolSetPluginBasePath()));
+
+	int32 ReturnCode;
+	FString OutResults;
+	FString OutErrors;
+	FPlatformProcess::ExecProcess(*URL, *FullCommand, &ReturnCode, &OutResults, &OutErrors);
+	const FString ProjectVersion = UGeneralProjectSettings::StaticClass()->GetDefaultObject<UGeneralProjectSettings>()->ProjectVersion;
+	FRegexPattern RegexPattern(TEXT("commit ((\\d|\\w)*)"));
+	FRegexMatcher RegexMatcher(RegexPattern, OutResults);
+	FString CommitHash(TEXT("0"));
+	if(RegexMatcher.FindNext())
+	{
+		CommitHash = RegexMatcher.GetCaptureGroup(1);
+	}
+	FString TimeStr(TEXT("0"));
+	RegexPattern = FRegexPattern(TEXT("Date.*?(\\d{2}:\\d{2}:\\d{2}.*?\\d{4}).*"));
+	RegexMatcher = FRegexMatcher(RegexPattern, OutResults);
+	if(RegexMatcher.FindNext())
+	{
+		TimeStr = RegexMatcher.GetCaptureGroup(1);
+	}
+	VersionInfo = FString::Printf(TEXT("%s|%s|%s"), *ProjectVersion, *CommitHash, *TimeStr);
+	UE_LOG(LogTemp, Log, TEXT("UEditorToolSetBPLibrary, GetVersionInfo, %s"), *VersionInfo);
+}

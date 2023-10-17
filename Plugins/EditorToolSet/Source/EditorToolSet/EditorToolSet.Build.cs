@@ -28,7 +28,7 @@ public class EditorToolSet : ModuleRules
 			new string[]
 			{
 				"Core",
-				"Projects",
+				"EngineSettings",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

@@ -33,4 +33,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="EditorToolSet")
 	static void ReadExcelFile(const FString& ExcelFilePath);
+
+	UFUNCTION(BlueprintCallable, Category="EditorToolSet")
+	static void GetVersionInfo(FString& VersionInfo);
 };
