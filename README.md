@@ -8,6 +8,7 @@ UE4/5编辑器扩展框架
 - 选择目录、文件
 - 拆分大文件
 - 读取Xlsx、Xls文件
+- 获取project，git，svn版本信息
 
 ## 打开方法
 ![](https://github.com/CalmLoader/Calmer-PictureBed/blob/main/EditorToolFramework/OpenUtility.png)
